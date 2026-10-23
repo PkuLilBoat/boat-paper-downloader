@@ -1,0 +1,60 @@
+{
+  "version": 3,
+  "profile": "psychology_project_core_topics",
+  "default_category": "00_uncategorized",
+  "categories": [
+    {
+      "slug": "00_uncategorized",
+      "label_zh": "未分类",
+      "label_en": "Uncategorized",
+      "description": "临时入口；只有在无法可靠判断是否属于四个核心主题时使用，后续必须复核。",
+      "finder_tags": [
+        "未分类"
+      ]
+    },
+    {
+      "slug": "01_mbti_psychological_type",
+      "label_zh": "MBTI与心理类型",
+      "label_en": "MBTI and Psychological Type",
+      "description": "MBTI、Jungian psychological types、人格类型、类型学测量、类型稳定性、类型与行为/职业/关系的关联研究。",
+      "finder_tags": [
+        "MBTI",
+        "心理类型",
+        "人格类型"
+      ]
+    },
+    {
+      "slug": "02_trauma",
+      "label_zh": "创伤",
+      "label_en": "Trauma",
+      "description": "创伤、PTSD、复杂性创伤、童年逆境、依恋创伤、创伤后成长、创伤治疗与评估。",
+      "finder_tags": [
+        "创伤",
+        "PTSD"
+      ]
+    },
+    {
+      "slug": "03_romantic_competence",
+      "label_zh": "Romantic Competence",
+      "label_en": "Romantic Competence",
+      "description": "Romantic competence、亲密关系能力、恋爱能力、关系技能、关系教育、恋爱发展任务。",
+      "finder_tags": [
+        "Romantic competence",
+        "亲密关系能力"
+      ]
+    },
+    {
+      "slug": "04_psychometrics_methodology",
+      "label_zh": "心理测量方法论",
+      "label_en": "Psychometrics and Methodology",
+      "description": "量表开发、信效度、测量不变性、CFA/EFA、IRT、项目反应理论、测量模型、研究设计、元分析、统计方法。",
+      "finder_tags": [
+        "心理测量",
+        "方法论",
+        "统计方法"
+      ]
+    }
+  ],
+  "directory_mode": "property_only_not_directories",
+  "note": "These categories are allowed Markdown property values only. Do not create category folders under ~/Documents/PAPER/Papers."
+}

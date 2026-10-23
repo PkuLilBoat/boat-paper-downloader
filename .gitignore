@@ -1,0 +1,40 @@
+# Local runtime state and downloads
+browser_profile/
+logs/
+runs/
+.paper-downloader-runs/
+papers/
+downloads/
+local/*
+!local/*.example.json
+*.private.*
+*.sqlite*
+*.db
+*.pdf
+*.caj
+*.part
+*cookies*.json
+*storage_state*.json
+
+# Credentials and machine configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+.claude/settings.local.json
+.codex/settings.local.json
+
+# Dependencies and generated files
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+dist/
+build/
+.cache/
+.pytest_cache/
+*.log

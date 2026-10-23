@@ -1,0 +1,34 @@
+{
+  "enabled": true,
+  "login_url": null,
+  "username": "your-student-id",
+  "password": "your-password",
+  "username_selectors": [
+    "#user_name",
+    "input[name='userName']"
+  ],
+  "password_selectors": [
+    "#password",
+    "input[name='password']"
+  ],
+  "submit_selectors": [
+    "#logon_button",
+    "input[onclick='oauthLogon()']"
+  ],
+  "login_required_selectors": [
+    "#user_name",
+    "#password",
+    "#logon_button"
+  ],
+  "otp": {
+    "enabled": true,
+    "always_prompt": false,
+    "detect_selectors": [
+      "#otp_code",
+      "#sms_code",
+      "#valid_code"
+    ],
+    "prompt": "If PKU unified auth asks for OTP / SMS / CAPTCHA, complete it in the browser and then press Enter here to continue.",
+    "success_selectors": []
+  }
+}
