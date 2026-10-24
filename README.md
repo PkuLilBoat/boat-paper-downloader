@@ -1,6 +1,12 @@
-English | [简体中文](README.zh-CN.md)
+<img src="assets/community-banner.png" alt="Learning and creating in the AI era" width="680">
+
+<table><tr><td width="180"><img src="assets/wechat.jpg" alt="WeChat community QR code" width="156"></td><td>Scan the QR code to join our lifelong learning community and discussion groups.<br>Let's exchange ideas about AI, knowledge management, and productivity tools.</td></tr></table>
+
+---
 
 # BOAT Paper Downloader
+
+English | [简体中文](README.zh-CN.md)
 
 Turn a list of DOIs into local paper full texts. The downloader tries open-access, publisher and browser-assisted routes, saves valid PDFs, converts successful downloads to Markdown through local MinerU by default, and reports unresolved items.
 
@@ -109,9 +115,5 @@ No open-source license has been assigned to this repository. Source comments in 
 Python dependencies and external MinerU and Codex CLI tools retain their respective project licenses. Rights in papers and downloaded content are separate from software licensing.
 
 ## Community and feedback
-
-Scan the QR code to add me on WeChat and join our lifelong learners and discussion groups. We share ideas about learning, Obsidian, knowledge management, and productivity tools.
-
-![WeChat community QR code](assets/wechat.jpg)
 
 You can also report problems or suggest improvements through this repository's [GitHub Issues](https://github.com/PkuLilBoat/boat-paper-downloader/issues). Joining the community is optional and is not required to use the tool.

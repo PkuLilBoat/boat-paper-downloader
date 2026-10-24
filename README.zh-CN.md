@@ -1,6 +1,12 @@
-[English](README.md) | 简体中文
+<img src="assets/community-banner.png" alt="AI时代的学习和创作" width="680">
+
+<table><tr><td width="180"><img src="assets/wechat.jpg" alt="微信交流二维码" width="156"></td><td>扫描二维码，加入终身学习者社群、交流群。<br>一起交流 AI、知识管理与效率工具。</td></tr></table>
+
+---
 
 # BOAT Paper Downloader
+
+[English](README.md) | 简体中文
 
 从 DOI 清单到本地论文全文：批量尝试开放获取、出版社直连与浏览器辅助路线，保留成功的 PDF，默认通过本地 MinerU 转成 Markdown，并记录未完成项。
 
@@ -109,9 +115,5 @@ python -m unittest discover -s tests -v
 Python 依赖以及外部 MinerU、Codex CLI 的许可证由各自项目维护；论文及下载内容的权利不属于本仓库的软件授权范围。
 
 ## 交流与反馈
-
-扫描二维码添加我的微信，可加入终身学习者群、交流群，一起交流学习、Obsidian、知识管理与效率工具。
-
-![微信交流二维码](assets/wechat.jpg)
 
 问题与建议也欢迎通过本仓库的 [GitHub Issues](https://github.com/PkuLilBoat/boat-paper-downloader/issues) 提交。扫码交流为可选入口，不影响工具使用。
