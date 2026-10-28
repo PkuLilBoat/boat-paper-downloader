@@ -493,10 +493,9 @@ async def run_parallel_http_routes(
                 results[route_name] = tasks[route_name].result()
             except Exception as exc:
                 results[route_name] = {"success": False, "method": route_name, "error": str(exc)}
-            if results[route_name].get("success") and _valid_pdf(candidates[route_name]):
+            if winner_name is None and results[route_name].get("success") and _valid_pdf(candidates[route_name]):
                 winner_name = route_name
                 cancel_event.set()
-                break
 
     if pending:
         remaining = [(name, task) for name, task in tasks.items() if task in pending]
@@ -510,6 +509,17 @@ async def run_parallel_http_routes(
     for route_name in candidates:
         results.setdefault(route_name, {"success": False, "method": route_name})
 
+    attempts = []
+    for route_name, route_result in results.items():
+        attempts.extend(route_result.get("strategy_attempts", []))
+        source = route_result.get("source_url") or route_result.get("manual_url")
+        if source and not route_result.get("strategy_attempts"):
+            attempts.append({"url": source, "method": route_result.get("method", "unknown"),
+                             "url_role": "candidate_request" if route_result.get("source_url") else "reported_landing",
+                             "outcome": "candidate" if route_result.get("success") and _valid_pdf(candidates[route_name]) else "failed"})
+    for attempt in attempts:
+        attempt.setdefault("access_context", network_route)
+
     try:
         if winner_name is not None:
             result = results[winner_name]
@@ -521,6 +531,7 @@ async def run_parallel_http_routes(
                 "success": True,
                 "file_path": str(output_path),
                 "network_route": network_route,
+                "strategy_attempts": attempts,
             }
 
         manual_url = (
@@ -534,6 +545,7 @@ async def run_parallel_http_routes(
             "method": "http_fast_lane",
             "manual_url": manual_url,
             "network_route": network_route,
+            "strategy_attempts": attempts,
             "error": "; ".join(errors) if errors else None,
         }
     finally:
@@ -696,6 +708,7 @@ async def download_paper(doi: str, output_dir: str, config: dict[str, Any] | Non
         print(f"  PRESERVE [previous or invalid]: {preserved_path}")
 
     last_manual_url = f"https://doi.org/{doi}"
+    strategy_attempts = []
     http_timeout = max(5, int(cfg.get("http_timeout", 12)))
     if _HAS_OA_AND_INSTITUTIONAL and not cfg.get("fallback_only", False):
         direct_result = await run_parallel_http_routes(
@@ -705,6 +718,7 @@ async def download_paper(doi: str, output_dir: str, config: dict[str, Any] | Non
             network_route="direct",
         )
         last_manual_url = direct_result.get("manual_url") or last_manual_url
+        strategy_attempts.extend(direct_result.get("strategy_attempts", []))
         if direct_result["success"]:
             print(f"  SUCCESS [{direct_result['method']} / direct]: {direct_result['file_path']}")
             return {"doi": doi, "status": "downloaded", **direct_result}
@@ -722,9 +736,10 @@ async def download_paper(doi: str, output_dir: str, config: dict[str, Any] | Non
                 network_route=proxy_route,
             )
             last_manual_url = proxy_result.get("manual_url") or last_manual_url
+            strategy_attempts.extend(proxy_result.get("strategy_attempts", []))
             if proxy_result["success"]:
                 print(f"  SUCCESS [{proxy_result['method']} / configured proxy]: {proxy_result['file_path']}")
-                return {"doi": doi, "status": "downloaded", **proxy_result}
+                return {"doi": doi, "status": "downloaded", **proxy_result, "strategy_attempts": strategy_attempts}
         print("  HTTP routes failed; trying bounded headless browser access...")
 
     if cfg.get("worker_mode", False):
@@ -735,6 +750,7 @@ async def download_paper(doi: str, output_dir: str, config: dict[str, Any] | Non
             "status": "needs_coordinator_fallback",
             "file_path": None,
             "manual_url": last_manual_url,
+            "strategy_attempts": strategy_attempts,
         }
 
     if _HAS_PLAYWRIGHT_INSTITUTIONAL and not full_path.exists():
@@ -745,9 +761,13 @@ async def download_paper(doi: str, output_dir: str, config: dict[str, Any] | Non
             async with browser_semaphore:
                 pw_result = await download_institutional_playwright(doi, full_path, cfg)
         last_manual_url = pw_result.get("manual_url") or last_manual_url
+        strategy_attempts.append({"url": last_manual_url, "method": pw_result.get("method", "browser"),
+                                  "outcome": "candidate" if pw_result.get("success") else "failed",
+                                  "url_role": "reported_landing",
+                                  "access_context": "institutional_browser"})
         if pw_result["success"]:
             print(f"  SUCCESS [{pw_result['method']}]: {pw_result['file_path']}")
-            return {"doi": doi, "status": "downloaded", **pw_result}
+            return {"doi": doi, "status": "downloaded", **pw_result, "strategy_attempts": strategy_attempts}
         print("  Playwright institutional failed, falling back to Sci-Hub...")
 
     browser_semaphore = cfg.get("_browser_semaphore")
@@ -764,7 +784,7 @@ async def download_paper(doi: str, output_dir: str, config: dict[str, Any] | Non
         print(f"  FAILED: {result.get('error', 'Unknown error')}")
         result["status"] = "failed"
     result["manual_url"] = result.get("manual_url") or last_manual_url
-    return {"doi": doi, **result}
+    return {"doi": doi, **result, "strategy_attempts": strategy_attempts}
 
 
 async def download_papers(dois: list[str], output_dir: str, config: dict[str, Any] | None = None) -> list[dict[str, Any]]:

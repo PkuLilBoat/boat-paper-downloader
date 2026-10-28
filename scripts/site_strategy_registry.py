@@ -44,19 +44,17 @@ def detect_site_entry(url: str, path: Path | None = None) -> dict | None:
 
 def markdown_table(path: Path | None = None) -> str:
     lines = [
-        "| Site family | Hosts | HTTP handler | Playwright handler | Validation | Strategy |",
-        "| --- | --- | --- | --- | --- | --- |",
+        "| Site family | Hosts | HTTP handler | Playwright handler |",
+        "| --- | --- | --- | --- |",
     ]
     for entry in site_entries(path):
         hosts = ", ".join(entry.get("hosts", []))
         lines.append(
-            "| {label} | {hosts} | {http_handler} | {playwright_handler} | {validation} | {strategy} |".format(
+            "| {label} | {hosts} | {http_handler} | {playwright_handler} |".format(
                 label=entry["label"],
                 hosts=hosts or "-",
                 http_handler=entry.get("http_handler") or "-",
                 playwright_handler=entry.get("playwright_handler") or "-",
-                validation=entry.get("validation_status") or "-",
-                strategy=entry.get("strategy_type") or "-",
             )
         )
     return "\n".join(lines)

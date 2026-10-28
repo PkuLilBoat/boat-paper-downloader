@@ -1,196 +1,159 @@
 {
   "schema_version": 1,
-  "oa_sources": [
-    {
-      "key": "unpaywall",
-      "label": "Unpaywall",
-      "strategy_type": "legal_oa_api",
-      "priority": 1
-    },
-    {
-      "key": "semantic_scholar",
-      "label": "Semantic Scholar",
-      "strategy_type": "legal_oa_api",
-      "priority": 2
-    },
-    {
-      "key": "arxiv",
-      "label": "arXiv",
-      "strategy_type": "preprint_direct_pdf",
-      "priority": 3
-    },
-    {
-      "key": "pubmed_central",
-      "label": "PubMed Central",
-      "strategy_type": "repository_pdf",
-      "priority": 4
-    },
-    {
-      "key": "biorxiv_medrxiv",
-      "label": "bioRxiv / medRxiv",
-      "strategy_type": "preprint_direct_pdf",
-      "priority": 5
-    }
-  ],
   "site_families": [
     {
       "key": "annualreviews",
       "label": "Annual Reviews",
-      "hosts": ["annualreviews.org"],
-      "detection_patterns": ["annualreviews\\.org"],
-      "playwright_handler": "annualreviews",
-      "strategy_category": "dedicated_post_form_handler",
-      "strategy_type": "post_form_pdf",
-      "validation_status": "verified_success",
-      "representative_doi": "10.1146/annurev-clinpsy-061324-074037",
-      "notes": "Use DOI-first navigation, then resolve the PDF POST form action."
+      "hosts": [
+        "annualreviews.org"
+      ],
+      "detection_patterns": [
+        "annualreviews\\.org"
+      ],
+      "playwright_handler": "annualreviews"
     },
     {
       "key": "elsevier",
       "label": "Elsevier / ScienceDirect",
-      "hosts": ["sciencedirect.com"],
-      "detection_patterns": ["sciencedirect\\.com"],
-      "playwright_handler": "elsevier",
-      "strategy_category": "dedicated_button_handler",
-      "strategy_type": "download_button_or_authenticated_request",
-      "validation_status": "route_verified_challenge_blocked",
-      "representative_doi": "10.1016/j.paid.2022.111713",
-      "notes": "Route is stable, but current blocker is Cloudflare or anti-bot challenge."
+      "hosts": [
+        "sciencedirect.com"
+      ],
+      "detection_patterns": [
+        "sciencedirect\\.com"
+      ],
+      "playwright_handler": "elsevier"
     },
     {
       "key": "springer",
       "label": "Springer",
-      "hosts": ["link.springer.com"],
-      "detection_patterns": ["link\\.springer\\.com"],
+      "hosts": [
+        "link.springer.com"
+      ],
+      "detection_patterns": [
+        "link\\.springer\\.com"
+      ],
       "http_handler": "springer",
-      "playwright_handler": "springer",
-      "strategy_category": "deterministic_direct_pdf",
-      "strategy_type": "templated_pdf_url",
-      "validation_status": "verified_success",
-      "representative_doi": "10.1007/s10964-014-0177-9",
-      "notes": "Construct /content/pdf/{encoded_doi}.pdf."
+      "playwright_handler": "springer"
     },
     {
       "key": "wiley",
       "label": "Wiley Online Library",
-      "hosts": ["onlinelibrary.wiley.com"],
-      "detection_patterns": ["onlinelibrary\\.wiley\\.com"],
+      "hosts": [
+        "onlinelibrary.wiley.com"
+      ],
+      "detection_patterns": [
+        "onlinelibrary\\.wiley\\.com"
+      ],
       "http_handler": "wiley",
-      "playwright_handler": "wiley",
-      "strategy_category": "direct_then_rendered_scan",
-      "strategy_type": "templated_pdf_url_plus_page_scan",
-      "validation_status": "verified_failure_mode",
-      "representative_doi": "10.1111/pere.12175",
-      "notes": "Try /doi/pdfdirect first, then /doi/pdf, then rendered-page PDF controls."
+      "playwright_handler": "wiley"
     },
     {
       "key": "apa_psycnet",
       "label": "APA / PsycNet",
-      "hosts": ["doi.apa.org", "psycnet.apa.org"],
-      "detection_patterns": ["doi\\.apa\\.org", "psycnet\\.apa\\.org"],
+      "hosts": [
+        "doi.apa.org",
+        "psycnet.apa.org"
+      ],
+      "detection_patterns": [
+        "doi\\.apa\\.org",
+        "psycnet\\.apa\\.org"
+      ],
       "http_handler": "apa_psycnet",
-      "playwright_handler": "apa_psycnet",
-      "strategy_category": "institutional_access_flow",
-      "strategy_type": "get_access_then_fulltext_pdf",
-      "validation_status": "verified_success",
-      "representative_doi": "10.1037/0022-3514.79.2.224",
-      "notes": "Use institutional access flow, then fetch authenticated /fulltext PDF."
+      "playwright_handler": "apa_psycnet"
     },
     {
       "key": "atypon",
       "label": "Atypon Journals",
-      "hosts": ["pubs.apa.org"],
-      "detection_patterns": ["pubs\\.apa\\.org"],
+      "hosts": [
+        "pubs.apa.org"
+      ],
+      "detection_patterns": [
+        "pubs\\.apa\\.org"
+      ],
       "http_handler": "atypon",
-      "playwright_handler": "atypon",
-      "strategy_category": "templated_route_family",
-      "strategy_type": "doi_pdf_epdf_pdfplus_variants",
-      "validation_status": "supported_family",
-      "representative_doi": null,
-      "notes": "Replace /doi/abs style routes with /doi/pdf, /doi/epdf, or /doi/pdfplus."
+      "playwright_handler": "atypon"
     },
     {
       "key": "tandf",
       "label": "Taylor & Francis",
-      "hosts": ["tandfonline.com"],
-      "detection_patterns": ["tandfonline\\.com"],
+      "hosts": [
+        "tandfonline.com"
+      ],
+      "detection_patterns": [
+        "tandfonline\\.com"
+      ],
       "http_handler": "tandf",
-      "playwright_handler": "tandf",
-      "strategy_category": "deterministic_direct_pdf",
-      "strategy_type": "templated_pdf_url",
-      "validation_status": "route_verified_challenge_blocked",
-      "representative_doi": "10.1080/15374410701653120",
-      "notes": "Construct /doi/pdf/{doi}; current blocker is Cloudflare challenge."
+      "playwright_handler": "tandf"
     },
     {
       "key": "sage",
       "label": "SAGE native",
-      "hosts": ["journals.sagepub.com"],
-      "detection_patterns": ["journals\\.sagepub\\.com"],
+      "hosts": [
+        "journals.sagepub.com"
+      ],
+      "detection_patterns": [
+        "journals\\.sagepub\\.com"
+      ],
       "http_handler": "sage",
-      "playwright_handler": "sage",
-      "strategy_category": "deterministic_direct_pdf",
-      "strategy_type": "templated_pdf_url",
-      "validation_status": "native_success_fixture_pending",
-      "representative_doi": null,
-      "notes": "Use native SAGE handler only for journals.sagepub.com."
+      "playwright_handler": "sage"
     },
     {
       "key": "sage_cnpereading",
       "label": "SAGE CNPeReading mirror",
-      "hosts": ["sage.cnpereading.com"],
-      "detection_patterns": ["sage\\.cnpereading\\.com"],
-      "strategy_category": "generic_mirror_fallback",
-      "strategy_type": "generic_html_extraction",
-      "validation_status": "verified_success_generic",
-      "representative_doi": "10.1177/0146167217736049",
-      "notes": "Keep mirror traffic on generic extraction instead of forcing native SAGE rules."
+      "hosts": [
+        "sage.cnpereading.com"
+      ],
+      "detection_patterns": [
+        "sage\\.cnpereading\\.com"
+      ]
     },
     {
       "key": "cambridge",
       "label": "Cambridge Core",
-      "hosts": ["cambridge.org"],
-      "detection_patterns": ["cambridge\\.org"],
-      "playwright_handler": "cambridge",
-      "strategy_category": "rendered_page_scan",
-      "strategy_type": "pdf_link_scan",
-      "validation_status": "verified_success",
-      "representative_doi": "10.1017/S095457941800158X",
-      "notes": "Scan the rendered page for /pdf or .pdf links."
+      "hosts": [
+        "cambridge.org"
+      ],
+      "detection_patterns": [
+        "cambridge\\.org"
+      ],
+      "playwright_handler": "cambridge"
     },
     {
       "key": "oxford",
       "label": "Oxford Academic",
-      "hosts": ["academic.oup.com"],
-      "detection_patterns": ["academic\\.oup\\.com"],
-      "playwright_handler": "oxford",
-      "strategy_category": "rendered_page_scan",
-      "strategy_type": "pdf_link_scan",
-      "validation_status": "verified_success",
-      "representative_doi": "10.1093/sleepadvances/zpae049",
-      "notes": "Scan rendered article page for /pdf/ links."
+      "hosts": [
+        "academic.oup.com"
+      ],
+      "detection_patterns": [
+        "academic\\.oup\\.com"
+      ],
+      "playwright_handler": "oxford"
     },
     {
       "key": "cnki",
       "label": "CNKI",
-      "hosts": ["cnki.net"],
-      "detection_patterns": ["cnki\\.net"],
-      "strategy_category": "browser_assisted_manual_download",
-      "strategy_type": "prefer_pdf_then_archive",
-      "validation_status": "browser_assisted",
-      "representative_doi": null,
-      "notes": "Open detail page, prefer #pdfDown, fall back to CAJ only when user explicitly wants it."
+      "hosts": [
+        "cnki.net"
+      ],
+      "detection_patterns": [
+        "cnki\\.net"
+      ]
     },
     {
       "key": "open_generic",
       "label": "Generic OA publisher",
-      "hosts": ["mdpi.com", "frontiersin.org", "springeropen.com", "biomedcentral.com"],
-      "detection_patterns": ["mdpi\\.com", "frontiersin\\.org", "springeropen\\.com", "biomedcentral\\.com"],
-      "strategy_category": "generic_html_or_direct_pdf",
-      "strategy_type": "citation_pdf_url_or_oa_pdf",
-      "validation_status": "generic_supported",
-      "representative_doi": null,
-      "notes": "Usually satisfied by OA stage or generic HTML extraction."
+      "hosts": [
+        "mdpi.com",
+        "frontiersin.org",
+        "springeropen.com",
+        "biomedcentral.com"
+      ],
+      "detection_patterns": [
+        "mdpi\\.com",
+        "frontiersin\\.org",
+        "springeropen\\.com",
+        "biomedcentral\\.com"
+      ]
     }
   ]
 }

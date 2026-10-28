@@ -84,17 +84,19 @@ PDF 获取与 Markdown 转换分别记录结果。PDF 已下载不代表转换�
 - 默认文献库路径为 `~/Documents/PAPER/Papers`。整理工具支持的 `--library-dir` / `--destination-dir` 参数以对应脚本 `--help` 为准；运行整理、移动或去重前先查看实际目标，支持预演的命令先用 `--dry-run`。
 - PDF 下载不会自动把文件搬进正式文献库；`--organize-after-download` 才开启该交接。
 - 个人 Obsidian Rule 文件与 Skill 管理台账不随仓库发布；使用者应采用自己的命名、分类和来源规则。
+- 保留内置 HTTP / 浏览器下载处理器；不包含本地完整版的跨任务站点记忆、历史学习排序、逐站点经验手册及历史验收台账。结果中的 `strategy_attempts` 仅用于本次排障，不会训练或改变后续任务的路线顺序。
+- PDF 获取成功仍需核对身份、版本与全文完整性，之后才能正式入库；具体操作见 Skill 验收流程。
 
 ## 文档
 
 - [浏览器会话配置](docs/institutional-browser.md)
 - [机构登录配置](docs/institutional-login-automation.md)
 - [知网下载衔接](docs/cnki-download-integration.md)
-- [站点策略](docs/site-strategy-playbook.md)
+- [下载流程与验收](docs/technical-background.md)
 - [文献库组织](docs/library-organization.md)
 - [Markdown 翻译](docs/markdown-translation.md)
 
-部分文档保留了开发阶段的站点观察，不能视为当前网站可访问性保证。
+已配置处理器不代表当前网站一定可访问，也不代表使用者拥有机构访问权限。
 
 ## 测试
 
@@ -107,6 +109,8 @@ python -m unittest discover -s tests -v
 ## 发布说明
 
 此公开副本从当前源码整理，使用全新 Git 历史，排除了原仓库中的浏览器 profile、凭据文件、日志、数据库和个人项目复盘。它与作者本机的运行 Skill 分开维护。
+
+当前文件树同时移除了早期站点操作手册和历史验收表；较早的公开提交仍可能含有这些文档，本次没有重写已发布的 Git 历史。公开源码仍包含内置处理器，未做加密或付费激活。
 
 ## 许可证与第三方来源
 

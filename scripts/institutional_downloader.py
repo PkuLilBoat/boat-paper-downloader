@@ -334,9 +334,10 @@ def execute_resolver_queue(
 ) -> dict:
     """Execute queued candidates until one returns a valid PDF."""
     policy = ZoteroRequestPolicy(same_domain_delay_seconds=0)
+    attempts = []
     for candidate in queue:
         if _cancelled():
-            return {"success": False, "method": "institutional_cancelled"}
+            return {"success": False, "method": "institutional_cancelled", "strategy_attempts": attempts}
         if policy.mark_seen(candidate.url):
             print(f"  [Resolver/{candidate.stage}] Skipping duplicate: {candidate.url}")
             continue
@@ -345,14 +346,19 @@ def execute_resolver_queue(
             continue
         print(f"  [Resolver/{candidate.stage}] Trying: {candidate.url}")
         content = fetch_candidate_pdf(candidate, client, policy=policy)
+        attempts.append({"url": candidate.url, "method": candidate.method,
+                         "outcome": "candidate" if content else "failed",
+                         "reason": "PDF bytes pending identity/completeness review" if content else "No valid PDF returned"})
         if content:
             output_path.write_bytes(content)
             return {
                 "success": True,
                 "method": candidate.method,
                 "file_path": str(output_path),
+                "source_url": candidate.url,
+                "strategy_attempts": attempts,
             }
-    return {"success": False, "method": "institutional"}
+    return {"success": False, "method": "institutional", "strategy_attempts": attempts}
 
 
 def try_institutional_access(
@@ -407,6 +413,7 @@ def try_institutional_access(
             if result["success"]:
                 result["manual_url"] = final_url
                 return result
+            return {**result, "manual_url": final_url}
 
     except Exception as e:
         print(f"  [Institutional] Failed: {e}")

@@ -43,5 +43,17 @@ class SiteStrategyRegistryTests(TestCase):
 
     def test_markdown_table_contains_expected_columns(self):
         table = registry.markdown_table()
-        self.assertIn('| Site family | Hosts | HTTP handler | Playwright handler | Validation | Strategy |', table)
+        self.assertIn('| Site family | Hosts | HTTP handler | Playwright handler |', table)
         self.assertIn('Annual Reviews', table)
+
+    def test_public_registry_contains_execution_mapping_only(self):
+        allowed = {'key', 'label', 'hosts', 'detection_patterns', 'http_handler', 'playwright_handler'}
+        for entry in registry.site_entries():
+            self.assertLessEqual(set(entry), allowed)
+
+    def test_public_distribution_excludes_learned_strategy_store(self):
+        root = SCRIPTS_DIR.parent
+        for name in ('docs/sites', 'docs/site-strategy-playbook.md', 'docs/site-validation-matrix.md'):
+            self.assertFalse((root / name).exists(), name)
+        self.assertFalse(hasattr(registry, 'ingest_results'))
+        self.assertFalse(hasattr(registry, 'rank_candidates'))

@@ -1,4 +1,8 @@
 # Local runtime state and downloads
+# Private edition's learned site manuals must not enter this distribution.
+docs/sites/
+docs/site-strategy-playbook.md
+docs/site-validation-matrix.md
 browser_profile/
 logs/
 runs/

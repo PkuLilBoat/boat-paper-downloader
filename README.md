@@ -17,6 +17,7 @@ This is the public distribution of the author's `paper-downloader` Skill. The re
 - Download PDFs for one DOI or a batch of DOIs.
 - Race open-access and publisher HTTP requests, then fall back to existing configured proxies and bounded browser assistance. The source retains a final Sci-Hub fallback.
 - Validate PDFs and record failures or steps requiring human interaction. Availability is not guaranteed.
+- Keep per-run attempt traces for diagnosis; PDF acquisition still requires identity and completeness review before library intake.
 - Convert successful PDFs into same-stem Markdown with accompanying `images/` assets.
 - Optionally rename papers, review duplicates, maintain a SQLite index and collections, or produce interleaved English/Chinese translations.
 
@@ -82,6 +83,7 @@ PDF acquisition and Markdown conversion have separate results. A downloaded PDF 
 - The default library location is `~/Documents/PAPER/Papers`. Inspect each script's `--help` for supported target overrides such as `--library-dir` or `--destination-dir`; use available dry-run options before organizing or deduplicating files.
 - `--organize-after-download` explicitly enables formal library intake.
 - Personal Obsidian rules and Skill management records are excluded. Apply your own naming, classification and provenance policies.
+- Built-in download handlers remain available. Cross-run site memory, learned route ranking, host-specific manuals and historical site-validation records from the local edition are excluded. Result traces do not train or reorder future runs.
 
 ## Documentation
 
@@ -90,11 +92,11 @@ The detailed guides are currently in Chinese:
 - [Browser sessions](docs/institutional-browser.md)
 - [Institutional login](docs/institutional-login-automation.md)
 - [CNKI integration](docs/cnki-download-integration.md)
-- [Site strategies](docs/site-strategy-playbook.md)
+- [Download workflow and review](docs/technical-background.md)
 - [Library organization](docs/library-organization.md)
 - [Markdown translation](docs/markdown-translation.md)
 
-Some guides preserve development-time observations; they do not guarantee current site accessibility.
+Configured handlers do not guarantee current site accessibility or account entitlement.
 
 ## Tests
 
@@ -107,6 +109,8 @@ Tests primarily use temporary files and mocked network responses. Passing tests 
 ## Distribution
 
 This public copy uses fresh Git history and excludes the original repository's browser profiles, credentials, logs, databases and personal project notes. It is maintained separately from the author's local runtime Skill.
+
+The current tree also excludes the earlier site playbook and validation matrix. Earlier public commits may still contain those documents; this update does not rewrite published Git history. The public source includes built-in handlers and is not encrypted or protected by paid activation.
 
 ## License and third-party sources
 

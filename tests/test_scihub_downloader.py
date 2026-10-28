@@ -383,6 +383,33 @@ class SciHubPipelineTests(IsolatedAsyncioTestCase):
             self.assertEqual(started, {'oa', 'institutional'})
             self.assertEqual(list(Path(tmpdir).glob('*.part')), [])
 
+    async def test_simultaneously_completed_routes_keep_oa_winner_and_both_receipts(self):
+        original_wait = asyncio.wait
+
+        async def finish_both(tasks, return_when):
+            return await original_wait(tasks, return_when=asyncio.ALL_COMPLETED)
+
+        def route(method):
+            def run(doi, output_path, *args):
+                output_path.write_bytes(b'%PDF-1.7\n' + method.encode() * 12_000)
+                return {'success': True, 'method': method, 'source_url': f'https://{method}.test/paper.pdf'}
+            return run
+
+        with tempfile.TemporaryDirectory() as tmpdir, patch.object(
+            scihub_downloader, 'try_open_access', side_effect=route('oa')
+        ), patch.object(scihub_downloader, 'try_institutional_access', side_effect=route('institutional')), patch.object(
+            scihub_downloader.asyncio, 'wait', side_effect=finish_both
+        ):
+            destination = Path(tmpdir) / 'paper.pdf'
+            result = await scihub_downloader.run_parallel_http_routes(
+                '10.1000/test', destination, timeout=10, network_route='direct'
+            )
+            self.assertEqual(result['method'], 'oa')
+            self.assertEqual(destination.read_bytes(), b'%PDF-1.7\n' + b'oa' * 12_000)
+            self.assertEqual({a['method'] for a in result['strategy_attempts']}, {'oa', 'institutional'})
+            self.assertTrue(all(a['outcome'] == 'candidate' for a in result['strategy_attempts']))
+            self.assertEqual(list(Path(tmpdir).glob('*.part')), [])
+
     async def test_download_paper_tries_direct_then_configured_environment_route_without_ivanti(self):
         routes = []
 
@@ -390,8 +417,10 @@ class SciHubPipelineTests(IsolatedAsyncioTestCase):
             routes.append(network_route)
             if network_route == 'environment':
                 output_path.write_bytes(b'%PDF-1.7\n' + b'x' * 12_000)
-                return {'success': True, 'method': 'institutional_environment', 'file_path': str(output_path)}
-            return {'success': False, 'method': 'http_fast_lane', 'manual_url': f'https://doi.org/{doi}'}
+                return {'success': True, 'method': 'institutional_environment', 'file_path': str(output_path),
+                        'strategy_attempts': [{'outcome': 'candidate', 'access_context': 'environment'}]}
+            return {'success': False, 'method': 'http_fast_lane', 'manual_url': f'https://doi.org/{doi}',
+                    'strategy_attempts': [{'outcome': 'failed', 'access_context': 'direct'}]}
 
         with tempfile.TemporaryDirectory() as tmpdir, patch.object(
             scihub_downloader, '_HAS_OA_AND_INSTITUTIONAL', True
@@ -404,6 +433,7 @@ class SciHubPipelineTests(IsolatedAsyncioTestCase):
 
         self.assertTrue(result['success'])
         self.assertEqual(routes, ['direct', 'environment'])
+        self.assertEqual([a['outcome'] for a in result['strategy_attempts']], ['failed', 'candidate'])
         playwright.assert_not_called()
         ivanti_preflight.assert_not_called()
 

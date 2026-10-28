@@ -63,6 +63,9 @@ class InstitutionalResolverQueueTests(TestCase):
         self.assertTrue(result['success'])
         self.assertEqual(result['method'], 'm2')
         self.assertEqual(attempted, ['https://a.test/one.pdf', 'https://a.test/two.pdf'])
+        self.assertEqual(result['source_url'], 'https://a.test/two.pdf')
+        self.assertEqual([item['outcome'] for item in result['strategy_attempts']], ['failed', 'candidate'])
+        self.assertIn('pending identity', result['strategy_attempts'][1]['reason'])
 
     def test_execute_resolver_queue_skips_normalized_duplicate_urls(self):
         queue = [
